@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Investment Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Smart Investment Portfolio Recommender</h1>
+    </header>
+    
+    <section class="hero">
+        <h2>Optimize Your Investments</h2>
+        <p>Get a smart portfolio recommendation based on your risk level and preferences.</p>
+    </section>
+
+    <section class="investment-form">
+        <h2>Enter Your Investment Details</h2>
+        <form action="/portfolio" method="GET">
+            <label for="amount">Investment Amount ($):</label>
+            <input type="number" id="amount" name="amount" required>
+
+            <label>Risk Level:</label>
+            <div class="risk-options">
+                <input type="radio" id="low" name="risk" value="low" required>
+                <label for="low">Low</label>
+                <input type="radio" id="medium" name="risk" value="medium">
+                <label for="medium">Medium</label>
+                <input type="radio" id="high" name="risk" value="high">
+                <label for="high">High</label>
+            </div>
+
+            <label for="duration">Investment Duration:</label>
+            <select id="duration" name="duration" required>
+                <option value="short">Short-term (&lt;1 year)</option>
+                <option value="medium">Mid-term (1-5 years)</option>
+                <option value="long">Long-term (&gt;5 years)</option>
+            </select>
+
+            <label>Preferred Sectors:</label>
+            <div class="sectors">
+                <input type="checkbox" id="tech" name="sectors" value="Technology">
+                <label for="tech">Technology</label>
+                <input type="checkbox" id="health" name="sectors" value="Healthcare">
+                <label for="health">Healthcare</label>
+                <input type="checkbox" id="finance" name="sectors" value="Finance">
+                <label for="finance">Finance</label>
+            </div>
+            
+            <button type="submit">Get Recommendation</button>
+        </form>
+    </section>
+
+    <script>
+        document.getElementById("investmentForm").addEventListener("submit", function(event) {
+            event.preventDefault(); 
+            const amount = document.getElementById("amount").value;
+            const risk = document.querySelector('input[name="risk"]:checked').value;
+            const duration = document.getElementById("duration").value;
+        
+            const sectorElements = document.querySelectorAll('input[name="sectors"]:checked');
+            const sectors = Array.from(sectorElements).map(sector => sector.value).join(",");
+
+            if (!amount) {
+            alert("Please enter a valid investment amount.");
+            return;
+            }
+            const queryString = `portfolio.html?amount=${amount}&risk=${risk}&duration=${duration}&sectors=${encodeURIComponent(sectors)}`;
+            window.location.href = queryString;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='p_style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Your Smart Investment Portfolio</h1>
+    </header>
+
+    <!-- Investment Form -->
+    <section class="input-form">
+        <form method="POST" id="investment-form">
+            <label for="amount">Investment Amount ($):</label>
+            <input type="number" name="amount" id="amount" value="{{ amount }}" required>
+            
+            <label for="risk">Risk Preference:</label>
+            <select name="risk" id="risk">
+                <option value="low" {% if risk == "low" %}selected{% endif %}>Low</option>
+                <option value="medium" {% if risk == "medium" %}selected{% endif %}>Medium</option>
+                <option value="high" {% if risk == "high" %}selected{% endif %}>High</option>
+            </select>
+            <div class="button-container">
+                <button type="submit">Generate Portfolio</button>
+            </div>
+        </form>
+    </section>
+
+    {% if investment_data %}
+        <section class="results">
+            <h2>Investment Plan</h2>
+            <p><strong>Investment Amount:</strong> <span id="display-amount">${{ amount }}</span></p>
+            <p><strong>Risk Preference:</strong> <span id="display-risk">{{ risk.capitalize() }}</span></p>
+            
+
+            <h3>Recommended Investment Breakdown</h3>
+            <table>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount ($)</th>
+                </tr>
+                {% for category, value in investment_data.items() %}
+                <tr>
+                    <td><strong>{{ category }}</strong></td>
+                    <td>${{ value|round(2) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <button id="showChartBtn" style="margin-top: 15px;">See Pie Chart</button>
+
+            <div id="chartContainer" style="display: none;">
+                <h3>Investment Pie Chart</h3>
+                <img src="{{ img_url }}" alt="Investment Pie Chart">
+            </div>
+            
+            
+        </section>
+    {% endif %}
+
+    <section class="back">
+        <a href="{{ url_for('index') }}">Go Back</a>
+    </section>
+
+    <script>
+        document.getElementById("showChartBtn")?.addEventListener("click", function() {
+            document.getElementById("chartContainer").style.display = "block";
+            this.style.display = "none"; // Hide button after clicking
+        });
+
+        function updateInvestmentDetails() {
+            const amount = document.getElementById("amount").value;
+            const risk = document.getElementById("risk").value;
+
+            document.getElementById("display-amount").textContent = `$${amount}`;
+            document.getElementById("display-risk").textContent = risk.charAt(0).toUpperCase() + risk.slice(1);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("amount").addEventListener("input", updateInvestmentDetails);
+            document.getElementById("risk").addEventListener("change", updateInvestmentDetails);
+        });
+    </script>
+
+</body>
+</html>
